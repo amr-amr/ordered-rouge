@@ -1263,7 +1263,7 @@ sub computeNGramScore {
   }
 }
 ########################################################################################################################
-# ROUGE-ON (START)
+# ROUGE-ON (START)                                                                                               # 1.5.6
 ########################################################################################################################
 
 sub computeONGramScore {
@@ -1388,7 +1388,7 @@ sub computeONGramScore {
 }
 
 
-sub createONGram {
+sub createONGram {                                                                     # Unchaned from createNGram 1.5.6
   my $text=shift;
   my $g=shift;
   my $NSIZE=shift;
@@ -1434,22 +1434,27 @@ sub createONGram {
   }
   #-------------------------------------
   # create ngram
+  my ($position);                                                                                                # 1.5.6
+  my ($position_mod);                                                                                            # 1.5.6
+  $position_mod = 10;       # map word index to pseudo_index [0,9] -> 0, [10,19] -> 1, [20,29] -> 2 and so on`   # 1.5.6
+
   $count=0;
   for($i=0;$i<=$#m_tokens-$NSIZE+1;$i++) {
     $gram=$m_tokens[$i];
     for($j=$i+1;$j<=$i+$NSIZE-1;$j++) {
       $gram.=" $m_tokens[$j]";
     }
+    $position = ($i % $position_mod) / $position_mod;                                                            # 1.5.6
     $count++;
     unless(exists($g->{$gram})) {
       $g->{$gram}=1;                                                                                             # 1.5.6
       $g->{"_word_index_"}->{$gram}=[];                                                                          # 1.5.6
-      push(@{$g->{"_word_index_"}->{$gram}}, $i);                                                                # 1.5.6
+      push(@{$g->{"_word_index_"}->{$gram}}, $position);                                                         # 1.5.6
 #      print "$gram: $g->{$gram}, @{$g->{'_word_index_'}->{$gram}} \n";                                          # 1.5.6
     }
     else {
       $g->{$gram}++;                                                                                             # 1.5.6
-      push(@{$g->{"_word_index_"}->{$gram}}, $i);                                                                # 1.5.6
+      push(@{$g->{"_word_index_"}->{$gram}}, $position);                                                         # 1.5.6
 #      print "$gram: $g->{$gram}, @{$g->{'_word_index_'}->{$gram}} \n";                                          # 1.5.6
     }
   }
@@ -1513,7 +1518,7 @@ sub ongramScore {
 }
 
 ########################################################################################################################
-# ROUGE-ON (END)
+# ROUGE-ON (END)                                                                                                 # 1.5.6
 ########################################################################################################################
 
 
